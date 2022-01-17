@@ -11,10 +11,11 @@ on:
       nuget_source_path:
         required: true
         type: string
-        
-    secrets:
       NUGET_USERNAME:
         required: true
+        type: string
+        
+    secrets:
       NUGET_API_KEY:
         required: true
 
