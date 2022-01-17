@@ -1,0 +1,47 @@
+name: Publish Package to Github Packages
+on:
+  workflow_call:
+    inputs:
+      proj_or_sln_path:
+        required: true
+        type: string
+      nupkg_root_path:
+        required: true
+        type: string
+      nuget_source_path:
+        required: true
+        type: string
+        
+    secrets:
+      NUGET_USERNAME:
+        required: true
+      NUGET_API_KEY:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: | 
+            3.1.x
+            6.0.x
+      - name: Prepare Packages
+        run: dotnet nuget add source ${{ inputs.nuget_source_path }} --username ${{ secrets.NUGET_USERNAME }} --password ${{ secrets.NUGET_API_KEY }} --store-password-in-clear-text --name github
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build
+      - name: Test
+        run: dotnet test
+      - name: Package
+        run: dotnet pack ${{ inputs.proj_or_sln_path }} --configuration Release
+      - name: Publish
+        run: dotnet nuget push ${{ inputs.nupkg_root_path }} --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ inputs.nuget_source_path }}
+          
