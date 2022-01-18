@@ -31,7 +31,7 @@ on:
 
 jobs:
   publish-nuget-package:
-    uses: emata-ug/workflow-templates/.github/workflows/publish-nuget-package.yml@set-nuget-username-as-secret
+    uses: emata-ug/workflow-templates/.github/workflows/publish-nuget-package.yml@v1.0.0
     with:
       proj_or_sln_path: [YOUR_PROJ_OR_SLN]
       nupkg_root_path: [YOUR_NUPKG_ROOT_PATH]
